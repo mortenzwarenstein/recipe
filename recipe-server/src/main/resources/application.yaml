@@ -1,3 +1,14 @@
+logging:
+  structured:
+    format:
+      console: ecs
+  level:
+    root: INFO
+    nl.tenmore.recipeserver: INFO
+    org.springframework.security: WARN
+    org.springframework.web: WARN
+    org.hibernate: WARN
+
 spring:
   application:
     name: recipe-server
@@ -20,9 +31,13 @@ spring:
 
   flyway:
     enabled: true
-
   security:
     oauth2:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:8180/realms/recipe
+  web:
+    error:
+      include-message: never
+
+

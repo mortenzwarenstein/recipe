@@ -27,4 +27,16 @@ export class RecipeService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`/api/recipes/${id}`);
   }
+
+  findCurrent(): Observable<RecipeResponse> {
+    return this.http.get<RecipeResponse>('/api/recipes/current');
+  }
+
+  skip(): Observable<RecipeResponse> {
+    return this.http.post<RecipeResponse>('/api/recipes/current/skip', {});
+  }
+
+  pick(): Observable<RecipeResponse> {
+    return this.http.post<RecipeResponse>('/api/recipes/current/pick', {});
+  }
 }

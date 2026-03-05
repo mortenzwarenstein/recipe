@@ -21,17 +21,31 @@ class RecipeController(private val recipeService: RecipeService) {
         ResponseEntity.status(HttpStatus.CREATED).body(recipeService.create(request, authentication.name))
 
     @GetMapping
-    fun findAll(): List<RecipeResponse> = recipeService.findAll()
+    fun findAll(): ResponseEntity<List<RecipeResponse>> = ResponseEntity.ok(recipeService.findAll())
+
+    @GetMapping("/current")
+    fun getCurrent(): ResponseEntity<RecipeResponse> =
+        recipeService.getCurrent()?.let { ResponseEntity.ok(it) } ?: ResponseEntity.notFound().build()
+
+    @PostMapping("/current/pick")
+    fun pick(): ResponseEntity<RecipeResponse> =
+        recipeService.pick(true)?.let { ResponseEntity.ok(it) } ?: ResponseEntity.notFound().build()
+
+    @PostMapping("/current/skip")
+    fun skipCurrent(): ResponseEntity<RecipeResponse> =
+        recipeService.pick(false)?.let { ResponseEntity.ok(it) } ?: ResponseEntity.notFound().build()
 
     @GetMapping("/{id}")
-    fun findById(@PathVariable id: Long): RecipeResponse = recipeService.findById(id)
+    fun findById(@PathVariable id: Long): ResponseEntity<RecipeResponse> = ResponseEntity.ok(recipeService.findById(id))
 
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
         @Valid @RequestBody request: UpdateRecipeRequest,
         authentication: Authentication
-    ): RecipeResponse = recipeService.update(id, request, authentication.name, authentication.isAdmin())
+    ): ResponseEntity<RecipeResponse> = ResponseEntity.ok(
+        recipeService.update(id, request, authentication.name, authentication.isAdmin())
+    )
 
     @DeleteMapping("/{id}")
     fun delete(
