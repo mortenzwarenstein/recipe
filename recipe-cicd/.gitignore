@@ -1,0 +1,5 @@
+# k3s kubeconfig — contains cluster credentials
+kubeconfig/
+
+# Local secrets for docker compose
+.env

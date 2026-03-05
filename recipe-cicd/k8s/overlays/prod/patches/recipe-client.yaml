@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recipe-client
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+        - name: recipe-client
+          imagePullPolicy: Always
+          resources:
+            requests:
+              memory: "32Mi"
+              cpu: "10m"
+            limits:
+              memory: "64Mi"
+          volumeMounts:
+            - name: client-env
+              mountPath: /usr/share/nginx/html/assets/env.json
+              subPath: env.json
+      volumes:
+        - name: client-env
+          configMap:
+            name: recipe-client-env

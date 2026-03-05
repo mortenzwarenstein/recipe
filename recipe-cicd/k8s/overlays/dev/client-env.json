@@ -1,0 +1,5 @@
+{
+  "keycloakIssuer": "http://keycloak.local/realms/recipe",
+  "requireHttps": false,
+  "sessionChecksEnabled": false
+}

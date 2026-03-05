@@ -1,0 +1,4 @@
+creation_rules:
+  - path_regex: k8s/.*secrets/.*\.env$
+    age: >-
+      age19ckvn99vjnulwnllcs4k479k0knxzys9tjccaa8y3qja5p98k59qa2l4ep
