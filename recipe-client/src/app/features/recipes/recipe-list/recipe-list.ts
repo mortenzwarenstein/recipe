@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { AuthService } from '../../../core/auth/auth.service';
@@ -10,7 +10,7 @@ import { RecipeResponse } from '../../../core/recipes/recipe.models';
   imports: [RouterLink],
   templateUrl: './recipe-list.html',
 })
-export class RecipeListComponent {
+export class RecipeListComponent implements OnInit {
   private readonly recipeService = inject(RecipeService);
   private readonly authService = inject(AuthService);
 
@@ -21,7 +21,7 @@ export class RecipeListComponent {
   protected readonly isAdmin = this.authService.isAdmin;
   protected readonly deletingIds = signal(new Set<number>());
 
-  constructor() {
+  ngOnInit(): void {
     this.recipeService.findAll().subscribe({
       next: recipes => {
         this.recipes.set(recipes);

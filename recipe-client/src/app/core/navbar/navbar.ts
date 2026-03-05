@@ -1,4 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationStart, Router, RouterLink } from '@angular/router';
 import { filter } from 'rxjs';
 
@@ -15,7 +16,6 @@ export class NavbarComponent {
   private readonly router = inject(Router);
 
   protected readonly isAuthenticated = this.authService.isAuthenticated;
-  protected readonly isAdmin = this.authService.isAdmin;
   protected readonly username = computed(() => {
     this.isAuthenticated(); // track signal for reactivity
     return this.authService.getUsername();
@@ -24,7 +24,7 @@ export class NavbarComponent {
 
   constructor() {
     this.router.events
-      .pipe(filter(e => e instanceof NavigationStart))
+      .pipe(filter(e => e instanceof NavigationStart), takeUntilDestroyed())
       .subscribe(() => this.isOpen.set(false));
   }
 

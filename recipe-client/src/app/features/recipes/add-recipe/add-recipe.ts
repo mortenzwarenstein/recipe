@@ -1,4 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
@@ -32,8 +33,9 @@ export class AddRecipeComponent {
 
     this.recipeService.create({ name, book, pageNumber: pageNumber! }).subscribe({
       next: () => this.router.navigate(['/recipes']),
-      error: (err: { error?: { detail?: string } }) => {
-        this.error.set(err.error?.detail ?? 'Failed to save recipe. Please try again.');
+      error: (err: unknown) => {
+        const detail = err instanceof HttpErrorResponse ? err.error?.detail : undefined;
+        this.error.set(detail ?? 'Failed to save recipe. Please try again.');
         this.loading.set(false);
       },
     });

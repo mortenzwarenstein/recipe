@@ -23,5 +23,8 @@ class Recipe(
     val createdByUsername: String = "",
 
     @Column(nullable = false, updatable = false)
-    val createdAt: Instant = Instant.now()
+    val createdAt: Instant = Instant.now(),
+
+    @Column(nullable = false)
+    var pickState: RecipePickState = RecipePickState.NOT_PICKED
 )

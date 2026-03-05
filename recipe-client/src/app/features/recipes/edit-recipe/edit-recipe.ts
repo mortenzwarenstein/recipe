@@ -1,4 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
@@ -10,7 +11,7 @@ import { RecipeService } from '../../../core/recipes/recipe.service';
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './edit-recipe.html',
 })
-export class EditRecipeComponent {
+export class EditRecipeComponent implements OnInit {
   private readonly recipeService = inject(RecipeService);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
@@ -28,7 +29,7 @@ export class EditRecipeComponent {
 
   private readonly id = Number(this.route.snapshot.paramMap.get('id'));
 
-  constructor() {
+  ngOnInit(): void {
     this.recipeService.findById(this.id).subscribe({
       next: recipe => {
         if (recipe.createdByUsername !== this.authService.getUsername()) {
@@ -51,8 +52,9 @@ export class EditRecipeComponent {
 
     this.recipeService.update(this.id, { name, book, pageNumber: pageNumber! }).subscribe({
       next: () => this.router.navigate(['/recipes']),
-      error: (err: { error?: { detail?: string } }) => {
-        this.error.set(err.error?.detail ?? 'Failed to save changes. Please try again.');
+      error: (err: unknown) => {
+        const detail = err instanceof HttpErrorResponse ? err.error?.detail : undefined;
+        this.error.set(detail ?? 'Failed to save changes. Please try again.');
         this.loading.set(false);
       },
     });

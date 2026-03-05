@@ -1,0 +1,6 @@
+@reference "../../../styles.css";
+
+.menu-item {
+  @apply text-white text-lg py-4 hover:text-blue-200 transition-colors;
+}
+

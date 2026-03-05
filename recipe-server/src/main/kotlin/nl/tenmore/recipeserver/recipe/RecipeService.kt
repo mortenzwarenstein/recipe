@@ -50,6 +50,38 @@ class RecipeService(private val recipeRepository: RecipeRepository) {
     }
 
     @Transactional
+    fun getCurrent(): RecipeResponse? =
+        recipeRepository.findAllByPickStateIn(listOf(RecipePickState.CURRENT)).firstOrNull()?.toResponse() ?: pick()
+
+
+    @Transactional
+    fun pick(currentIsPicked: Boolean = false): RecipeResponse? {
+        val recipes = recipeRepository.findAll()
+        if (recipes.isEmpty()) {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "No recipes available")
+        }
+
+        val currentRecipe = recipes.find { it.pickState == RecipePickState.CURRENT }
+        if (currentRecipe != null) {
+            currentRecipe.pickState = if (currentIsPicked) RecipePickState.PICKED else RecipePickState.NOT_PICKED
+            recipeRepository.save(currentRecipe)
+            recipeRepository.flush()
+        }
+
+        var candidates = recipes.filter { it.pickState == RecipePickState.NOT_PICKED && it != currentRecipe }
+        if (candidates.isEmpty()) {
+            val toReset = recipes.filter { it != currentRecipe }
+            toReset.forEach { it.pickState = RecipePickState.NOT_PICKED }
+            recipeRepository.saveAll(toReset)
+            candidates = toReset
+        }
+
+        val next = candidates.randomOrNull() ?: return null
+        next.pickState = RecipePickState.CURRENT
+        return recipeRepository.save(next).toResponse()
+    }
+
+    @Transactional
     fun delete(id: Long, username: String, isAdmin: Boolean = false) {
         val recipe = recipeRepository.findById(id)
             .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Recipe not found") }
@@ -67,6 +99,7 @@ class RecipeService(private val recipeRepository: RecipeRepository) {
         book = book,
         pageNumber = pageNumber,
         createdByUsername = createdByUsername,
-        createdAt = createdAt
+        createdAt = createdAt,
+        pickState = pickState
     )
 }
