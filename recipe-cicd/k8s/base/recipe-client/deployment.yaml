@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recipe-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: recipe-client
+  template:
+    metadata:
+      labels:
+        app: recipe-client
+    spec:
+      containers:
+        - name: recipe-client
+          image: ghcr.io/mortenzwarenstein/recipe-client:latest
+          ports:
+            - containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5

@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recipe-server
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+        - name: recipe-server
+          imagePullPolicy: Always
+          env:
+            - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI
+              value: https://auth.mortenzwarenstein.nl/realms/recipe
+            - name: JAVA_TOOL_OPTIONS
+              value: "-Xmx192m"
+          resources:
+            requests:
+              memory: "192Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"

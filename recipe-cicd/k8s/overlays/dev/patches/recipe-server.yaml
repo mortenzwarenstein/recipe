@@ -1,0 +1,13 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recipe-server
+spec:
+  template:
+    spec:
+      containers:
+        - name: recipe-server
+          imagePullPolicy: Never
+          env:
+            - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI
+              value: http://keycloak.local/realms/recipe

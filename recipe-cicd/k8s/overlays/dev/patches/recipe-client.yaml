@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recipe-client
+spec:
+  template:
+    spec:
+      containers:
+        - name: recipe-client
+          imagePullPolicy: Never
+          volumeMounts:
+            - name: client-env
+              mountPath: /usr/share/nginx/html/assets/env.json
+              subPath: env.json
+      volumes:
+        - name: client-env
+          configMap:
+            name: recipe-client-env

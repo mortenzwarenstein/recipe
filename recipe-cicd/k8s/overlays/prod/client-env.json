@@ -1,0 +1,5 @@
+{
+  "keycloakIssuer": "https://auth.mortenzwarenstein.nl/realms/recipe",
+  "requireHttps": true,
+  "sessionChecksEnabled": false
+}
