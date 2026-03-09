@@ -25,7 +25,11 @@
           <div class="flex-1 min-w-0">
             <p class="font-medium text-gray-900 truncate">{{ recipe.name }}</p>
             <p class="text-sm text-gray-500 mt-0.5">
-              {{ recipe.book }}, p. {{ recipe.pageNumber }} · by {{ recipe.createdByUsername }}
+              @if(recipe.book && recipe.pageNumber) {
+                {{ recipe.book }}, p. {{ recipe.pageNumber }}
+              } @else {
+                By heart
+              }· by {{ recipe.createdByUsername }}
             </p>
           </div>
 

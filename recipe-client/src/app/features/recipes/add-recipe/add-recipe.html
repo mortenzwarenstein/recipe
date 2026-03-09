@@ -18,34 +18,40 @@
         }
       </div>
 
-      <div class="flex flex-col gap-1.5">
-        <label for="book" class="text-sm font-medium text-gray-700">Book</label>
+      <label class="flex items-center gap-2.5 cursor-pointer">
         <input
-          id="book"
-          type="text"
-          formControlName="book"
-          placeholder="e.g. The Silver Spoon"
-          class="w-full px-3 py-2.5 text-sm bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          type="checkbox"
+          [checked]="byHeart()"
+          (change)="toggleByHeart($any($event.target).checked)"
+          class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
         />
-        @if (form.get('book')?.invalid && form.get('book')?.touched) {
-          <p class="text-xs text-red-600">Book is required.</p>
-        }
-      </div>
+        <span class="text-sm font-medium text-gray-700">By heart — no book needed</span>
+      </label>
 
-      <div class="flex flex-col gap-1.5">
-        <label for="pageNumber" class="text-sm font-medium text-gray-700">Page number</label>
-        <input
-          id="pageNumber"
-          type="number"
-          formControlName="pageNumber"
-          placeholder="e.g. 42"
-          min="1"
-          class="w-full px-3 py-2.5 text-sm bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-        />
-        @if (form.get('pageNumber')?.invalid && form.get('pageNumber')?.touched) {
-          <p class="text-xs text-red-600">Page number must be 1 or higher.</p>
-        }
-      </div>
+      @if (!byHeart()) {
+        <div class="flex flex-col gap-1.5">
+          <label class="text-sm font-medium text-gray-700">Book</label>
+          <app-search-cookbook formControlName="book" />
+          @if (form.get('book')?.invalid && form.get('book')?.touched) {
+            <p class="text-xs text-red-600">Book is required.</p>
+          }
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+          <label for="pageNumber" class="text-sm font-medium text-gray-700">Page number</label>
+          <input
+            id="pageNumber"
+            type="number"
+            formControlName="pageNumber"
+            placeholder="e.g. 42"
+            min="1"
+            class="w-full px-3 py-2.5 text-sm bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+          @if (form.get('pageNumber')?.invalid && form.get('pageNumber')?.touched) {
+            <p class="text-xs text-red-600">Page number must be 1 or higher.</p>
+          }
+        </div>
+      }
 
       @if (error()) {
         <p class="text-sm text-red-600">{{ error() }}</p>

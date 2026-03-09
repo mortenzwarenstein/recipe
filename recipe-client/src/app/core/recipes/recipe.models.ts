@@ -1,20 +1,20 @@
 export interface CreateRecipeRequest {
   name: string;
-  book: string;
-  pageNumber: number;
+  book: string | null;
+  pageNumber: number | null;
 }
 
 export interface UpdateRecipeRequest {
   name: string;
-  book: string;
-  pageNumber: number;
+  book: string | null;
+  pageNumber: number | null;
 }
 
 export interface RecipeResponse {
   id: number;
   name: string;
-  book: string;
-  pageNumber: number;
+  book: string | null;
+  pageNumber: number | null;
   createdByUsername: string;
   createdAt: string;
 }

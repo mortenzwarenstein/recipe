@@ -13,11 +13,11 @@ class Recipe(
     @Column(nullable = false)
     var name: String = "",
 
-    @Column(nullable = false)
-    var book: String = "",
+    @Column(nullable = true)
+    var book: String? = null,
 
-    @Column(nullable = false)
-    var pageNumber: Int = 0,
+    @Column(nullable = true)
+    var pageNumber: Int? = null,
 
     @Column(nullable = false)
     val createdByUsername: String = "",
