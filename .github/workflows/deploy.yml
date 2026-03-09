@@ -35,7 +35,9 @@ jobs:
         uses: azure/setup-kubectl@v4
 
       - name: Install kustomize
-        uses: kubernetes-sigs/kustomize/actions/setup-kustomize@main
+        run: |
+          curl -sL "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
+          sudo mv kustomize /usr/local/bin/
 
       - name: Install sops
         run: |
