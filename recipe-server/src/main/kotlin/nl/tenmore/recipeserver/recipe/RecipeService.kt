@@ -3,6 +3,7 @@ package nl.tenmore.recipeserver.recipe
 import nl.tenmore.recipeserver.recipe.dto.CreateRecipeRequest
 import nl.tenmore.recipeserver.recipe.dto.RecipeResponse
 import nl.tenmore.recipeserver.recipe.dto.UpdateRecipeRequest
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -34,13 +35,9 @@ class RecipeService(private val recipeRepository: RecipeRepository) {
             .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Recipe not found") }
 
     @Transactional
-    fun update(id: Long, request: UpdateRecipeRequest, username: String, isAdmin: Boolean = false): RecipeResponse {
+    fun update(id: Long, request: UpdateRecipeRequest): RecipeResponse {
         val recipe = recipeRepository.findById(id)
             .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Recipe not found") }
-
-        if (!isAdmin && recipe.createdByUsername != username) {
-            throw ResponseStatusException(HttpStatus.FORBIDDEN, "You can only edit your own recipes")
-        }
 
         recipe.name = request.name
         recipe.book = request.book
@@ -91,6 +88,13 @@ class RecipeService(private val recipeRepository: RecipeRepository) {
         }
 
         recipeRepository.delete(recipe)
+    }
+
+    @Transactional(readOnly = true)
+    fun getBooks(q: String?): List<String> {
+        val pageable = PageRequest.of(0, 10)
+        return if (q != null) recipeRepository.fetchDistinctBooksByBook(q, pageable)
+        else recipeRepository.fetchDistinctBooks(pageable)
     }
 
     private fun Recipe.toResponse() = RecipeResponse(
