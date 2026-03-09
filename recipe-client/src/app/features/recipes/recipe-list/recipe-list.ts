@@ -1,7 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { AuthService } from '../../../core/auth/auth.service';
 import { RecipeService } from '../../../core/recipes/recipe.service';
 import { RecipeResponse } from '../../../core/recipes/recipe.models';
 
@@ -12,13 +11,10 @@ import { RecipeResponse } from '../../../core/recipes/recipe.models';
 })
 export class RecipeListComponent implements OnInit {
   private readonly recipeService = inject(RecipeService);
-  private readonly authService = inject(AuthService);
 
   protected readonly recipes = signal<RecipeResponse[]>([]);
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
-  protected readonly currentUsername = this.authService.getUsername();
-  protected readonly isAdmin = this.authService.isAdmin;
   protected readonly deletingIds = signal(new Set<number>());
 
   ngOnInit(): void {
