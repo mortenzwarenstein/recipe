@@ -35,7 +35,7 @@ jobs:
         uses: azure/setup-kubectl@v4
 
       - name: Install kustomize
-        uses: imranismail/setup-kustomize@v2
+        uses: kubernetes-sigs/kustomize/actions/setup-kustomize@main
 
       - name: Install sops
         run: |
