@@ -17,7 +17,7 @@ spec:
               memory: "64Mi"
           volumeMounts:
             - name: client-env
-              mountPath: /usr/share/nginx/html/assets/env.json
+              mountPath: /usr/share/nginx/html/env.json
               subPath: env.json
       volumes:
         - name: client-env
