@@ -39,4 +39,9 @@ export class RecipeService {
   pick(): Observable<RecipeResponse> {
     return this.http.post<RecipeResponse>('/api/recipes/current/pick', {});
   }
+
+  getBooks(q?: string): Observable<string[]> {
+    const params = q ? { params: { q } } : {};
+    return this.http.get<string[]>('/api/recipes/books', params);
+  }
 }

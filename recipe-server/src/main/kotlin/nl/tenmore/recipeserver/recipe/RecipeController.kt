@@ -42,10 +42,7 @@ class RecipeController(private val recipeService: RecipeService) {
     fun update(
         @PathVariable id: Long,
         @Valid @RequestBody request: UpdateRecipeRequest,
-        authentication: Authentication
-    ): ResponseEntity<RecipeResponse> = ResponseEntity.ok(
-        recipeService.update(id, request, authentication.name, authentication.isAdmin())
-    )
+    ): ResponseEntity<RecipeResponse> = ResponseEntity.ok(recipeService.update(id, request))
 
     @DeleteMapping("/{id}")
     fun delete(
@@ -55,6 +52,10 @@ class RecipeController(private val recipeService: RecipeService) {
         recipeService.delete(id, authentication.name, authentication.isAdmin())
         return ResponseEntity.noContent().build()
     }
+
+    @GetMapping("/books")
+    fun getBooks(@RequestParam(required = false) q: String?): ResponseEntity<List<String>> =
+        ResponseEntity.ok(recipeService.getBooks(q))
 
     private fun Authentication.isAdmin(): Boolean =
         authorities.any { it.authority == "ROLE_ADMIN" }
