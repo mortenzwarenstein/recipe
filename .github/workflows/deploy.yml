@@ -1,0 +1,57 @@
+name: Deploy to production
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    name: Build & push images
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        run: bash recipe-cicd/build.sh
+
+  deploy:
+    name: Deploy to prod
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Install kustomize
+        uses: imranismail/setup-kustomize@v2
+
+      - name: Install sops
+        run: |
+          curl -sL https://github.com/getsops/sops/releases/download/v3.9.4/sops-v3.9.4.linux.amd64 \
+            -o /usr/local/bin/sops
+          chmod +x /usr/local/bin/sops
+
+      - name: Write secrets
+        run: |
+          mkdir -p ~/.kube ~/.config/sops/age
+          echo "${{ secrets.KUBECONFIG_PROD }}" > ~/.kube/config
+          echo "${{ secrets.SOPS_AGE_KEY }}" > ~/.config/sops/age/keys.txt
+          chmod 600 ~/.kube/config ~/.config/sops/age/keys.txt
+
+      - name: Deploy
+        env:
+          KUBECONFIG: ~/.kube/config
+          SOPS_AGE_KEY_FILE: ~/.config/sops/age/keys.txt
+        run: bash recipe-cicd/k8s/apply.sh prod
