@@ -22,7 +22,7 @@ export const appConfig: ApplicationConfig = {
       provide: APP_INITIALIZER,
       useFactory: () => {
         const oauthService = inject(OAuthService);
-        return () => fetch('/assets/env.json')
+        return () => fetch('/env.json')
           .then(r => r.json() as Promise<ClientEnv>)
           .then(env => {
             oauthService.configure({
