@@ -3,24 +3,25 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { AuthService } from '../../../core/auth/auth.service';
 import { RecipeService } from '../../../core/recipes/recipe.service';
+import { SearchCookbook } from '../../../shared/recipes/search-cookbook/search-cookbook';
 
 @Component({
   selector: 'app-edit-recipe',
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, SearchCookbook],
   templateUrl: './edit-recipe.html',
 })
 export class EditRecipeComponent implements OnInit {
   private readonly recipeService = inject(RecipeService);
-  private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
+  protected readonly byHeart = signal(false);
+
   protected readonly form = new FormGroup({
     name: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    book: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    pageNumber: new FormControl<number | null>(null, [Validators.required, Validators.min(1)]),
+    book: new FormControl<string | null>(null),
+    pageNumber: new FormControl<number | null>(null),
   });
 
   protected readonly loadError = signal<string | null>(null);
@@ -32,14 +33,33 @@ export class EditRecipeComponent implements OnInit {
   ngOnInit(): void {
     this.recipeService.findById(this.id).subscribe({
       next: recipe => {
-        if (recipe.createdByUsername !== this.authService.getUsername()) {
-          this.router.navigate(['/recipes']);
-          return;
+        const isByHeart = recipe.book == null;
+        this.byHeart.set(isByHeart);
+        this.form.setValue({ name: recipe.name, book: recipe.book ?? null, pageNumber: recipe.pageNumber ?? null });
+        if (!isByHeart) {
+          this.form.controls.book.setValidators([Validators.required]);
+          this.form.controls.pageNumber.setValidators([Validators.required, Validators.min(1)]);
+          this.form.controls.book.updateValueAndValidity();
+          this.form.controls.pageNumber.updateValueAndValidity();
         }
-        this.form.setValue({ name: recipe.name, book: recipe.book, pageNumber: recipe.pageNumber });
       },
       error: () => this.loadError.set('Recipe not found.'),
     });
+  }
+
+  protected toggleByHeart(checked: boolean): void {
+    this.byHeart.set(checked);
+    if (checked) {
+      this.form.controls.book.setValue(null);
+      this.form.controls.book.clearValidators();
+      this.form.controls.pageNumber.setValue(null);
+      this.form.controls.pageNumber.clearValidators();
+    } else {
+      this.form.controls.book.setValidators([Validators.required]);
+      this.form.controls.pageNumber.setValidators([Validators.required, Validators.min(1)]);
+    }
+    this.form.controls.book.updateValueAndValidity();
+    this.form.controls.pageNumber.updateValueAndValidity();
   }
 
   protected submit(): void {
@@ -50,7 +70,7 @@ export class EditRecipeComponent implements OnInit {
 
     const { name, book, pageNumber } = this.form.getRawValue();
 
-    this.recipeService.update(this.id, { name, book, pageNumber: pageNumber! }).subscribe({
+    this.recipeService.update(this.id, { name, book, pageNumber }).subscribe({
       next: () => this.router.navigate(['/recipes']),
       error: (err: unknown) => {
         const detail = err instanceof HttpErrorResponse ? err.error?.detail : undefined;

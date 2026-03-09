@@ -9,7 +9,11 @@
         {{ recipe.name }}
       </h1>
       <h2 class="text-lg font-semibold text-gray-400">
-        ({{ recipe.book }}, p. {{ recipe.pageNumber }})
+        @if(recipe.book && recipe.pageNumber) {
+          ({{ recipe.book }}, p. {{ recipe.pageNumber }})
+        } @else {
+          (By heart)
+        }Com
       </h2>
     </div>
     <div class="w-full flex gap-4">

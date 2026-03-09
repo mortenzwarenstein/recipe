@@ -6,8 +6,8 @@ import java.time.Instant
 data class RecipeResponse(
     val id: Long,
     val name: String,
-    val book: String,
-    val pageNumber: Int,
+    val book: String?,
+    val pageNumber: Int?,
     val createdByUsername: String,
     val createdAt: Instant,
     val pickState: RecipePickState
