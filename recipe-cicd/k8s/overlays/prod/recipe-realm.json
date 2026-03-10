@@ -19,10 +19,12 @@
       "implicitFlowEnabled": false,
       "directAccessGrantsEnabled": false,
       "redirectUris": [
-        "https://recipes.mortenzwarenstein.nl/*"
+        "https://recipes.mortenzwarenstein.nl/*",
+        "https://tenmore.nl/*"
       ],
       "webOrigins": [
-        "https://recipes.mortenzwarenstein.nl"
+        "https://recipes.mortenzwarenstein.nl",
+        "https://tenmore.nl"
       ],
       "attributes": {
         "pkce.code.challenge.method": "S256"
