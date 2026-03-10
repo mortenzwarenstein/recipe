@@ -31,7 +31,10 @@ export class AuthService {
     return (claims?.['preferred_username'] as string) ?? null;
   }
 
-  login(): void {
+  login(returnUrl?: string): void {
+    if (returnUrl && returnUrl !== '/') {
+      sessionStorage.setItem('post_login_redirect', returnUrl);
+    }
     this.oauthService.initCodeFlow();
   }
 

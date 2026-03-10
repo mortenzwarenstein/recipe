@@ -1,5 +1,5 @@
 import { APP_INITIALIZER, ApplicationConfig, inject, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { OAuthService, provideOAuthClient } from 'angular-oauth2-oidc';
 
@@ -22,6 +22,7 @@ export const appConfig: ApplicationConfig = {
       provide: APP_INITIALIZER,
       useFactory: () => {
         const oauthService = inject(OAuthService);
+        const router = inject(Router);
         return () => fetch('/env.json')
           .then(r => r.json() as Promise<ClientEnv>)
           .then(env => {
@@ -36,9 +37,19 @@ export const appConfig: ApplicationConfig = {
               sessionChecksEnabled: env.sessionChecksEnabled,
               useSilentRefresh: false,
             });
-            return oauthService.loadDiscoveryDocumentAndTryLogin().catch(() => {
-              oauthService.logOut(true);
-            });
+            return oauthService.loadDiscoveryDocumentAndTryLogin()
+              .then(() => {
+                if (oauthService.hasValidAccessToken()) {
+                  const redirect = sessionStorage.getItem('post_login_redirect');
+                  if (redirect) {
+                    sessionStorage.removeItem('post_login_redirect');
+                    router.navigateByUrl(redirect);
+                  }
+                }
+              })
+              .catch(() => {
+                oauthService.logOut(true);
+              });
           });
       },
       multi: true,
