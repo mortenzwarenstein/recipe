@@ -26,6 +26,7 @@ export class RecipeListComponent implements OnInit {
   protected readonly deletingIds = signal(new Set<number>());
 
   private readonly searchSubject = new Subject<string>();
+  private readonly page$ = toObservable(this.page);
 
   ngOnInit(): void {
     const debouncedSearch$ = this.searchSubject.pipe(
@@ -34,7 +35,7 @@ export class RecipeListComponent implements OnInit {
       tap(() => this.page.set(0)),
     );
 
-    const pageChange$ = toObservable(this.page).pipe(skip(1));
+    const pageChange$ = this.page$.pipe(skip(1));
 
     merge(of(null), debouncedSearch$, pageChange$)
       .pipe(
