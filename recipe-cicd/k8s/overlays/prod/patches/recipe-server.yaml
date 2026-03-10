@@ -13,10 +13,10 @@ spec:
             - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI
               value: https://auth.mortenzwarenstein.nl/realms/recipe
             - name: JAVA_TOOL_OPTIONS
-              value: "-Xmx192m"
+              value: "-Xmx180m"
           resources:
             requests:
-              memory: "192Mi"
+              memory: "256Mi"
               cpu: "100m"
             limits:
-              memory: "256Mi"
+              memory: "384Mi"
