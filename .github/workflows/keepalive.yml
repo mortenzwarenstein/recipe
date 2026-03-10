@@ -1,0 +1,12 @@
+name: Keep alive
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # every hour
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping
+        run: curl -sf https://recipes.mortenzwarenstein.nl > /dev/null
