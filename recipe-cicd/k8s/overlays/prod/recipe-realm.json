@@ -20,10 +20,12 @@
       "directAccessGrantsEnabled": false,
       "redirectUris": [
         "https://recipes.mortenzwarenstein.nl/*",
+        "https://mortenzwarenstein.nl/*",
         "https://tenmore.nl/*"
       ],
       "webOrigins": [
         "https://recipes.mortenzwarenstein.nl",
+        "https://mortenzwarenstein.nl",
         "https://tenmore.nl"
       ],
       "attributes": {

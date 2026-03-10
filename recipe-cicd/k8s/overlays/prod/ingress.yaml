@@ -10,8 +10,28 @@ spec:
     - hosts:
         - recipes.mortenzwarenstein.nl
       secretName: recipes-tls
+    - hosts:
+        - mortenzwarenstein.nl
+      secretName: mortenzwarenstein-tls
   rules:
     - host: recipes.mortenzwarenstein.nl
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: recipe-server
+                port:
+                  number: 8080
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: recipe-client
+                port:
+                  number: 80
+    - host: mortenzwarenstein.nl
       http:
         paths:
           - path: /api
