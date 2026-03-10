@@ -1,36 +1,30 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: keycloak-ingress
+  name: tenmore-ingress
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   ingressClassName: traefik
   tls:
     - hosts:
-        - auth.mortenzwarenstein.nl
-      secretName: auth-tls
-    - hosts:
-        - auth.tenmore.nl
-      secretName: auth-tenmore-tls
+        - tenmore.nl
+      secretName: tenmore-tls
   rules:
-    - host: auth.mortenzwarenstein.nl
+    - host: tenmore.nl
       http:
         paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: recipe-server
+                port:
+                  number: 8080
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: keycloak
+                name: recipe-client
                 port:
-                  number: 8080
-    - host: auth.tenmore.nl
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: keycloak
-                port:
-                  number: 8080
+                  number: 80
