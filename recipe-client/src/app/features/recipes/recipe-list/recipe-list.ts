@@ -1,8 +1,11 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, DestroyRef, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { Subject, merge, of, EMPTY } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap, tap, catchError, skip } from 'rxjs/operators';
+import { toObservable, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { RecipeService } from '../../../core/recipes/recipe.service';
-import { RecipeResponse } from '../../../core/recipes/recipe.models';
+import { PagedResponse, RecipeResponse } from '../../../core/recipes/recipe.models';
 
 @Component({
   selector: 'app-recipe-list',
@@ -11,23 +14,58 @@ import { RecipeResponse } from '../../../core/recipes/recipe.models';
 })
 export class RecipeListComponent implements OnInit {
   private readonly recipeService = inject(RecipeService);
+  private readonly destroyRef = inject(DestroyRef);
 
-  protected readonly recipes = signal<RecipeResponse[]>([]);
+  protected readonly query = signal('');
+  protected readonly page = signal(0);
+  protected readonly pageSize = 20;
+
+  protected readonly pagedData = signal<PagedResponse<RecipeResponse> | null>(null);
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
   protected readonly deletingIds = signal(new Set<number>());
 
+  private readonly searchSubject = new Subject<string>();
+
   ngOnInit(): void {
-    this.recipeService.findAll().subscribe({
-      next: recipes => {
-        this.recipes.set(recipes);
+    const debouncedSearch$ = this.searchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      tap(() => this.page.set(0)),
+    );
+
+    const pageChange$ = toObservable(this.page).pipe(skip(1));
+
+    merge(of(null), debouncedSearch$, pageChange$)
+      .pipe(
+        switchMap(() => {
+          this.loading.set(true);
+          return this.recipeService
+            .findAll(this.page(), this.pageSize, this.query() || undefined)
+            .pipe(
+              catchError(() => {
+                this.error.set('Failed to load recipes.');
+                this.loading.set(false);
+                return EMPTY;
+              }),
+            );
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(data => {
+        this.pagedData.set(data);
         this.loading.set(false);
-      },
-      error: () => {
-        this.error.set('Failed to load recipes.');
-        this.loading.set(false);
-      },
-    });
+        this.error.set(null);
+      });
+  }
+
+  protected onSearch(value: string): void {
+    this.query.set(value);
+    this.searchSubject.next(value);
+  }
+
+  protected goToPage(p: number): void {
+    this.page.set(p);
   }
 
   protected delete(id: number): void {
@@ -35,7 +73,9 @@ export class RecipeListComponent implements OnInit {
 
     this.recipeService.delete(id).subscribe({
       next: () => {
-        this.recipes.update(list => list.filter(r => r.id !== id));
+        this.pagedData.update(data =>
+          data ? { ...data, content: data.content.filter(r => r.id !== id) } : data,
+        );
         this.deletingIds.update(ids => {
           const next = new Set(ids);
           next.delete(id);

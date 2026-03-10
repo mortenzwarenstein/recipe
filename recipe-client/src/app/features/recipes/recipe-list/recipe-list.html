@@ -9,18 +9,32 @@
     </a>
   </div>
 
+  <div class="mb-4">
+    <input
+      type="search"
+      [value]="query()"
+      (input)="onSearch($any($event.target).value)"
+      placeholder="Search recipes…"
+      class="w-full sm:w-80 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+    />
+  </div>
+
   @if (loading()) {
     <p class="text-sm text-gray-500">Loading…</p>
   } @else if (error()) {
     <p class="text-sm text-red-600">{{ error() }}</p>
-  } @else if (recipes().length === 0) {
+  } @else if (pagedData()?.content?.length === 0) {
     <p class="text-sm text-gray-500">
-      No recipes yet.
-      <a routerLink="/recipes/new" class="text-blue-600 hover:underline">Add the first one.</a>
+      @if (query()) {
+        No recipes match "{{ query() }}".
+      } @else {
+        No recipes yet.
+        <a routerLink="/recipes/new" class="text-blue-600 hover:underline">Add the first one.</a>
+      }
     </p>
   } @else {
     <ul class="flex flex-col divide-y divide-gray-100">
-      @for (recipe of recipes(); track recipe.id) {
+      @for (recipe of pagedData()!.content; track recipe.id) {
         <li class="py-4 flex items-center gap-4">
           <div class="flex-1 min-w-0">
             <p class="font-medium text-gray-900 truncate">{{ recipe.name }}</p>
@@ -57,5 +71,30 @@
         </li>
       }
     </ul>
+
+    @if (pagedData()!.totalPages > 1) {
+      <div class="flex items-center justify-between mt-6 text-sm text-gray-600">
+        <span>
+          Page {{ pagedData()!.page + 1 }} of {{ pagedData()!.totalPages }}
+          &nbsp;·&nbsp; {{ pagedData()!.totalElements }} recipes
+        </span>
+        <div class="flex gap-2">
+          <button
+            (click)="goToPage(page() - 1)"
+            [disabled]="page() === 0"
+            class="px-3 py-1.5 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            Previous
+          </button>
+          <button
+            (click)="goToPage(page() + 1)"
+            [disabled]="page() >= pagedData()!.totalPages - 1"
+            class="px-3 py-1.5 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    }
   }
 </div>
