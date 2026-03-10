@@ -4,9 +4,16 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import org.springframework.stereotype.Repository
 
+@Repository
 interface RecipeRepository : JpaRepository<Recipe, Long> {
     fun findAllByPickStateIn(recipePickStates: List<RecipePickState>): List<Recipe>
+    fun countByPickState(recipePickState: RecipePickState): Long
+
+
+    @Query("SELECT count(*) FROM Recipe")
+    fun countAll(): Long
 
     @Query("SELECT r FROM Recipe r WHERE LOWER(r.name) LIKE LOWER(CONCAT('%', :q, '%'))")
     fun findAllByNameContaining(q: String, pageable: Pageable): Page<Recipe>
