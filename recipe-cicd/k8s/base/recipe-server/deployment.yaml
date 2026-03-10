@@ -4,6 +4,11 @@ metadata:
   name: recipe-server
 spec:
   replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   selector:
     matchLabels:
       app: recipe-server
@@ -35,8 +40,10 @@ spec:
             - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI
               value: http://keycloak:8080/realms/recipe/protocol/openid-connect/certs
           readinessProbe:
-            tcpSocket:
+            httpGet:
+              path: /actuator/health/readiness
               port: 8080
-            initialDelaySeconds: 30
+            initialDelaySeconds: 20
             periodSeconds: 10
             timeoutSeconds: 5
+            failureThreshold: 6
