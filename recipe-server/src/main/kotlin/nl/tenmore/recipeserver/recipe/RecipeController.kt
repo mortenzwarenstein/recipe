@@ -2,6 +2,7 @@ package nl.tenmore.recipeserver.recipe
 
 import jakarta.validation.Valid
 import nl.tenmore.recipeserver.recipe.dto.CreateRecipeRequest
+import nl.tenmore.recipeserver.recipe.dto.PagedResponse
 import nl.tenmore.recipeserver.recipe.dto.RecipeResponse
 import nl.tenmore.recipeserver.recipe.dto.UpdateRecipeRequest
 import org.springframework.http.HttpStatus
@@ -21,7 +22,11 @@ class RecipeController(private val recipeService: RecipeService) {
         ResponseEntity.status(HttpStatus.CREATED).body(recipeService.create(request, authentication.name))
 
     @GetMapping
-    fun findAll(): ResponseEntity<List<RecipeResponse>> = ResponseEntity.ok(recipeService.findAll())
+    fun findAll(
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "20") size: Int,
+        @RequestParam(required = false) q: String?,
+    ): ResponseEntity<PagedResponse<RecipeResponse>> = ResponseEntity.ok(recipeService.findAll(page, size, q))
 
     @GetMapping("/current")
     fun getCurrent(): ResponseEntity<RecipeResponse> =

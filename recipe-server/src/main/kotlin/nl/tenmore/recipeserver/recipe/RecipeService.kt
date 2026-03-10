@@ -1,6 +1,7 @@
 package nl.tenmore.recipeserver.recipe
 
 import nl.tenmore.recipeserver.recipe.dto.CreateRecipeRequest
+import nl.tenmore.recipeserver.recipe.dto.PagedResponse
 import nl.tenmore.recipeserver.recipe.dto.RecipeResponse
 import nl.tenmore.recipeserver.recipe.dto.UpdateRecipeRequest
 import org.springframework.data.domain.PageRequest
@@ -25,8 +26,21 @@ class RecipeService(private val recipeRepository: RecipeRepository) {
     }
 
     @Transactional(readOnly = true)
-    fun findAll(): List<RecipeResponse> =
-        recipeRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt")).map { it.toResponse() }
+    fun findAll(page: Int, size: Int, q: String?): PagedResponse<RecipeResponse> {
+        val pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"))
+        val result = if (!q.isNullOrBlank()) {
+            recipeRepository.findAllByNameContaining(q, pageable)
+        } else {
+            recipeRepository.findAll(pageable)
+        }
+        return PagedResponse(
+            content = result.content.map { it.toResponse() },
+            totalElements = result.totalElements,
+            totalPages = result.totalPages,
+            page = result.number,
+            size = result.size,
+        )
+    }
 
     @Transactional(readOnly = true)
     fun findById(id: Long): RecipeResponse =
