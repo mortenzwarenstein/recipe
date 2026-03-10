@@ -5,9 +5,27 @@ on:
     branches: [main]
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      server: ${{ steps.filter.outputs.server }}
+      client: ${{ steps.filter.outputs.client }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            server:
+              - 'recipe-server/**'
+            client:
+              - 'recipe-client/**'
+
   build:
     name: Build & push images
     runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.server == 'true' || needs.changes.outputs.client == 'true'
     permissions:
       contents: read
       packages: write
@@ -21,13 +39,19 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push
-        run: bash recipe-cicd/build.sh
+      - name: Build and push server
+        if: needs.changes.outputs.server == 'true'
+        run: bash recipe-cicd/build.sh server
+
+      - name: Build and push client
+        if: needs.changes.outputs.client == 'true'
+        run: bash recipe-cicd/build.sh client
 
   deploy:
     name: Deploy to prod
     runs-on: ubuntu-latest
-    needs: build
+    needs: [changes, build]
+    if: always() && needs.build.result != 'failure'
     steps:
       - uses: actions/checkout@v4
 
