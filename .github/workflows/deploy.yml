@@ -65,9 +65,10 @@ jobs:
 
       - name: Install sops
         run: |
-          curl -sL https://github.com/getsops/sops/releases/download/v3.9.4/sops-v3.9.4.linux.amd64 \
+          curl -sfL https://github.com/getsops/sops/releases/download/v3.9.4/sops-v3.9.4.linux.amd64 \
             -o /usr/local/bin/sops
           chmod +x /usr/local/bin/sops
+          sops --version
 
       - name: Write secrets
         run: |
