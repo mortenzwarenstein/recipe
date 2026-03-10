@@ -111,6 +111,12 @@ class RecipeService(private val recipeRepository: RecipeRepository) {
         else recipeRepository.fetchDistinctBooks(pageable)
     }
 
+    @Transactional(readOnly = true)
+    fun getPickedRecipesCount(): Long {
+        return recipeRepository.countByPickState(RecipePickState.PICKED)
+    }
+
+
     private fun Recipe.toResponse() = RecipeResponse(
         id = id,
         name = name,
