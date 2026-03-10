@@ -20,6 +20,6 @@ kustomize build --load-restrictor LoadRestrictionsNone "$SCRIPT_DIR/overlays/$OV
 
 echo "Restarting deployments..."
 kubectl rollout restart deployment/recipe-server deployment/recipe-client -n recipe
-kubectl rollout status deployment/recipe-server deployment/recipe-client -n recipe --timeout=120s
+kubectl rollout status deployment/recipe-server deployment/recipe-client -n recipe --timeout=300s
 
 echo "Done."
