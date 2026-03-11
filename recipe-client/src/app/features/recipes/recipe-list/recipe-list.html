@@ -55,6 +55,9 @@
                 By heart
               }
               &ensp;·&ensp;{{ recipe.createdByUsername }}
+              @if (recipe.calories) {
+                &ensp;·&ensp;{{ recipe.calories }}&thinsp;kcal
+              }
             </p>
           </div>
 

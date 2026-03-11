@@ -85,6 +85,7 @@ class MealPlanService(private val mealPlanRepo: MealPlanRepository, private val 
         pageNumber = pageNumber,
         createdByUsername = createdByUsername,
         createdAt = createdAt,
-        pickState = pickState
+        pickState = pickState,
+        calories = calories,
     )
 }

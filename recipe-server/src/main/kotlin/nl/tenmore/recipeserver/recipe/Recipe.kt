@@ -26,5 +26,8 @@ class Recipe(
     val createdAt: Instant = Instant.now(),
 
     @Column(nullable = false)
-    var pickState: RecipePickState = RecipePickState.NOT_PICKED
+    var pickState: RecipePickState = RecipePickState.NOT_PICKED,
+
+    @Column(nullable = true)
+    var calories: Int? = null
 )

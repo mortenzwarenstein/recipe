@@ -28,6 +28,20 @@
         <span class="text-sm text-espresso-800">By heart — no book needed</span>
       </label>
 
+      @if (byHeart()) {
+        <div>
+          <label for="calories" class="field-label">Calories <span class="normal-case font-normal text-taupe-400">(optional, per serving)</span></label>
+          <input
+            id="calories"
+            type="number"
+            formControlName="calories"
+            placeholder="e.g. 450"
+            min="1"
+            class="field-input"
+          />
+        </div>
+      }
+
       @if (!byHeart()) {
         <div>
           <label class="field-label">Book</label>

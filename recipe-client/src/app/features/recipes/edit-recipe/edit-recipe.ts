@@ -17,11 +17,13 @@ export class EditRecipeComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
 
   protected readonly byHeart = signal(false);
+  protected readonly caloriesAutoLookupAttempted = signal(false);
 
   protected readonly form = new FormGroup({
     name: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     book: new FormControl<string | null>(null),
     pageNumber: new FormControl<number | null>(null),
+    calories: new FormControl<number | null>(null, { validators: [Validators.min(1)] }),
   });
 
   protected readonly loadError = signal<string | null>(null);
@@ -35,7 +37,8 @@ export class EditRecipeComponent implements OnInit {
       next: recipe => {
         const isByHeart = recipe.book == null;
         this.byHeart.set(isByHeart);
-        this.form.setValue({ name: recipe.name, book: recipe.book ?? null, pageNumber: recipe.pageNumber ?? null });
+        this.caloriesAutoLookupAttempted.set(recipe.book != null);
+        this.form.setValue({ name: recipe.name, book: recipe.book ?? null, pageNumber: recipe.pageNumber ?? null, calories: recipe.calories ?? null });
         if (!isByHeart) {
           this.form.controls.book.setValidators([Validators.required]);
           this.form.controls.pageNumber.setValidators([Validators.required, Validators.min(1)]);
@@ -68,9 +71,9 @@ export class EditRecipeComponent implements OnInit {
     this.error.set(null);
     this.loading.set(true);
 
-    const { name, book, pageNumber } = this.form.getRawValue();
+    const { name, book, pageNumber, calories } = this.form.getRawValue();
 
-    this.recipeService.update(this.id, { name, book, pageNumber }).subscribe({
+    this.recipeService.update(this.id, { name, book, pageNumber, calories }).subscribe({
       next: () => this.router.navigate(['/recipes']),
       error: (err: unknown) => {
         const detail = err instanceof HttpErrorResponse ? err.error?.detail : undefined;
