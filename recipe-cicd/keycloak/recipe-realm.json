@@ -6,8 +6,14 @@
   "bruteForceProtected": true,
   "roles": {
     "realm": [
-      { "name": "ROLE_USER", "composite": false },
-      { "name": "ROLE_ADMIN", "composite": false }
+      {
+        "name": "ROLE_USER",
+        "composite": false
+      },
+      {
+        "name": "ROLE_ADMIN",
+        "composite": false
+      }
     ]
   },
   "clients": [
@@ -20,8 +26,12 @@
       "attributes": {
         "pkce.code.challenge.method": "S256"
       },
-      "redirectUris": ["http://localhost:4200/*"],
-      "webOrigins": ["+"]
+      "redirectUris": [
+        "http://localhost:4200/*"
+      ],
+      "webOrigins": [
+        "+"
+      ]
     }
   ],
   "users": [
@@ -35,7 +45,11 @@
           "temporary": true
         }
       ],
-      "realmRoles": ["ROLE_USER", "ROLE_ADMIN"]
+      "realmRoles": [
+        "ROLE_USER",
+        "ROLE_ADMIN"
+      ]
     }
-  ]
+  ],
+  "loginTheme": "recipe"
 }
