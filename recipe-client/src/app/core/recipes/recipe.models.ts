@@ -2,6 +2,7 @@ export interface CreateRecipeRequest {
   name: string;
   book: string | null;
   pageNumber: number | null;
+  calories: number | null;
 }
 
 export interface UpdateRecipeRequest {

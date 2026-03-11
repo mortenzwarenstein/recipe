@@ -19,9 +19,8 @@ class RecipeService(
 
     @Transactional
     fun create(request: CreateRecipeRequest, username: String): RecipeResponse {
-        val calories = if (request.book != null) {
-            calorieLookupService.lookupCalories(request.name, request.book)
-        } else null
+        val calories = request.calories
+            ?: if (request.book != null) calorieLookupService.lookupCalories(request.name, request.book) else null
 
         val recipe = Recipe(
             name = request.name,
