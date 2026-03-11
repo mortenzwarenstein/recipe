@@ -1,76 +1,69 @@
-<div class="max-w-screen-lg mx-auto px-4 sm:px-6 py-8">
+<div class="page">
   <div class="max-w-sm">
-    <h1 class="text-2xl font-semibold text-gray-900 mb-1">Add recipe</h1>
-    <p class="text-sm text-gray-500 mb-6">Save a recipe from your cookbook collection</p>
+    <h1 class="font-display italic text-4xl text-espresso-900 leading-tight mb-1">Add recipe</h1>
+    <p class="text-sm text-taupe-500 mb-8">Save a recipe from your collection</p>
 
-    <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-4">
-      <div class="flex flex-col gap-1.5">
-        <label for="name" class="text-sm font-medium text-gray-700">Recipe name</label>
+    <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-5">
+      <div>
+        <label for="name" class="field-label">Recipe name</label>
         <input
           id="name"
           type="text"
           formControlName="name"
           placeholder="e.g. Spaghetti Carbonara"
-          class="w-full px-3 py-2.5 text-sm bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          class="field-input"
         />
         @if (form.get('name')?.invalid && form.get('name')?.touched) {
-          <p class="text-xs text-red-600">Recipe name is required.</p>
+          <p class="text-xs text-terra-600 mt-1.5">Recipe name is required.</p>
         }
       </div>
 
-      <label class="flex items-center gap-2.5 cursor-pointer">
+      <label class="flex items-center gap-3 cursor-pointer select-none">
         <input
           type="checkbox"
           [checked]="byHeart()"
           (change)="toggleByHeart($any($event.target).checked)"
-          class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+          class="w-4 h-4 rounded accent-terra-500 cursor-pointer"
         />
-        <span class="text-sm font-medium text-gray-700">By heart — no book needed</span>
+        <span class="text-sm text-espresso-800">By heart — no book needed</span>
       </label>
 
       @if (!byHeart()) {
-        <div class="flex flex-col gap-1.5">
-          <label class="text-sm font-medium text-gray-700">Book</label>
+        <div>
+          <label class="field-label">Book</label>
           <app-search-cookbook formControlName="book" />
           @if (form.get('book')?.invalid && form.get('book')?.touched) {
-            <p class="text-xs text-red-600">Book is required.</p>
+            <p class="text-xs text-terra-600 mt-1.5">Book is required.</p>
           }
         </div>
 
-        <div class="flex flex-col gap-1.5">
-          <label for="pageNumber" class="text-sm font-medium text-gray-700">Page number</label>
+        <div>
+          <label for="pageNumber" class="field-label">Page number</label>
           <input
             id="pageNumber"
             type="number"
             formControlName="pageNumber"
             placeholder="e.g. 42"
             min="1"
-            class="w-full px-3 py-2.5 text-sm bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            class="field-input"
           />
           @if (form.get('pageNumber')?.invalid && form.get('pageNumber')?.touched) {
-            <p class="text-xs text-red-600">Page number must be 1 or higher.</p>
+            <p class="text-xs text-terra-600 mt-1.5">Page number must be 1 or higher.</p>
           }
         </div>
       }
 
       @if (error()) {
-        <p class="text-sm text-red-600">{{ error() }}</p>
+        <p class="text-sm text-terra-600">{{ error() }}</p>
       }
 
-      <div class="flex gap-3 mt-1">
+      <div class="flex gap-3 pt-2">
         <button
           type="submit"
           [disabled]="form.invalid || loading()"
-          class="flex-1 py-2.5 px-4 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-        >
-          {{ loading() ? 'Saving…' : 'Save recipe' }}
-        </button>
-        <a
-          routerLink="/recipes"
-          class="py-2.5 px-4 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-center"
-        >
-          Cancel
-        </a>
+          class="btn btn-primary flex-1"
+        >{{ loading() ? 'Saving…' : 'Save recipe' }}</button>
+        <a routerLink="/recipes" class="btn btn-secondary">Cancel</a>
       </div>
     </form>
   </div>

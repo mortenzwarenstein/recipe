@@ -2,14 +2,252 @@
 @source './**/*.{html,ts}';
 
 @theme {
-  --color-brand-50: #eff6ff;
-  --color-brand-100: #dbeafe;
-  --color-brand-200: #bfdbfe;
-  --color-brand-500: #3b82f6;
-  --color-brand-600: #2563eb;
-  --color-brand-700: #1d4ed8;
+  /* Parchment / warm neutrals */
+  --color-parchment-50:  #fdfaf5;
+  --color-parchment-100: #f5f0e8;
+  --color-parchment-200: #ede4d6;
+  --color-parchment-300: #ddd2c0;
+
+  /* Espresso / dark */
+  --color-espresso-900: #1a1008;
+  --color-espresso-800: #2c1f0e;
+  --color-espresso-700: #3d2d18;
+  --color-espresso-600: #513c26;
+
+  /* Taupe / muted text */
+  --color-taupe-300: #c5b09e;
+  --color-taupe-400: #a89080;
+  --color-taupe-500: #8a7461;
+  --color-taupe-600: #6b5b49;
+
+  /* Terracotta / primary accent */
+  --color-terra-50:  #fdf0ea;
+  --color-terra-100: #fae0d1;
+  --color-terra-200: #f4c0a3;
+  --color-terra-500: #b85830;
+  --color-terra-600: #9a4624;
+  --color-terra-700: #7e3519;
+
+  /* Sage / positive states */
+  --color-sage-50:  #f0f4ee;
+  --color-sage-100: #e1ebdd;
+  --color-sage-500: #4d6e41;
+  --color-sage-600: #3d5832;
+
+  /* Fonts */
+  --font-display: 'Lora', Georgia, serif;
+  --font-sans:    'DM Sans', system-ui, sans-serif;
 }
 
+/* ── Base ───────────────────────────────────────────────────── */
+
+html {
+  background-color: #f5f0e8;
+}
+
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  color: #1a1008;
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────── */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  border-radius: 0.5rem;
+  padding: 0.625rem 1.125rem;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background-color: #b85830;
+  color: #fdfaf5;
+  border-color: #b85830;
+}
+.btn-primary:not(:disabled):hover {
+  background-color: #9a4624;
+  border-color: #9a4624;
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: #1a1008;
+  border-color: #ddd2c0;
+}
+.btn-secondary:not(:disabled):hover {
+  background-color: #f5f0e8;
+  border-color: #b8aa98;
+}
+
+.btn-ghost {
+  background-color: transparent;
+  color: #8a7461;
+  border-color: transparent;
+  padding: 0.5rem 0.75rem;
+}
+.btn-ghost:not(:disabled):hover {
+  background-color: #ede4d6;
+  color: #1a1008;
+}
+
+.btn-danger {
+  background-color: transparent;
+  color: #b85830;
+  border-color: #fae0d1;
+}
+.btn-danger:not(:disabled):hover {
+  background-color: #fdf0ea;
+  border-color: #b85830;
+}
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  color: #a89080;
+  border: 1.5px solid #ddd2c0;
+  border-radius: 0.5rem;
+  padding: 0.45rem;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  line-height: 1;
+}
+.btn-icon:not(:disabled):hover {
+  background-color: #f5f0e8;
+  color: #1a1008;
+  border-color: #b8aa98;
+}
+
+/* ── Inputs ──────────────────────────────────────────────────── */
+
+.field-input {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 0.875rem;
+  color: #1a1008;
+  background-color: #fdfaf5;
+  border: 1.5px solid #ddd2c0;
+  border-radius: 0.5rem;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  appearance: none;
+}
+.field-input:focus {
+  border-color: #b85830;
+  box-shadow: 0 0 0 3px rgba(184, 88, 48, 0.10);
+}
+.field-input::placeholder {
+  color: #c5b09e;
+}
+
+.field-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #6b5b49;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 0.375rem;
+}
+
+/* ── Card ────────────────────────────────────────────────────── */
+
+.card {
+  background-color: #fdfaf5;
+  border: 1px solid #e8dece;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(26, 16, 8, 0.05), 0 1px 2px rgba(26, 16, 8, 0.04);
+}
+
+/* ── Page wrapper ────────────────────────────────────────────── */
+
+.page {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem;
+}
+@media (min-width: 640px) {
+  .page { padding: 3rem 1.5rem; }
+}
+
+/* ── Home quick-action cards ─────────────────────────────────── */
+
+.home-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding: 1.5rem;
+  background-color: #fdfaf5;
+  border: 1px solid #ddd2c0;
+  border-radius: 0.75rem;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+  box-shadow: 0 1px 3px rgba(26, 16, 8, 0.04);
+}
+.home-card:hover {
+  border-color: #b85830;
+  box-shadow: 0 4px 12px rgba(184, 88, 48, 0.1);
+  transform: translateY(-1px);
+}
+.home-card-icon {
+  color: #b85830;
+  margin-bottom: 0.5rem;
+}
+.home-card-title {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1a1008;
+}
+.home-card-sub {
+  font-size: 0.8125rem;
+  color: #8a7461;
+}
+
+/* ── Backwards compat ────────────────────────────────────────── */
+
 .button {
-  @apply rounded bg-brand-600 hover:bg-brand-700 text-white font-bold py-2 px-4 transition cursor-pointer flex gap-2 items-center text-center justify-center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  padding: 0.625rem 1.125rem;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  background-color: #b85830;
+  color: #fdfaf5;
+  border: 1.5px solid #b85830;
+  text-decoration: none;
+  line-height: 1;
+}
+.button:not(:disabled):hover {
+  background-color: #9a4624;
+  border-color: #9a4624;
 }
