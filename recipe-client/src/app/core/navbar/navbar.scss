@@ -129,7 +129,8 @@
   cursor: pointer;
   width: 100%;
 }
-.menu-item:hover {
+.menu-item:hover,
+.menu-item.menu-item-active {
   color: #b85830;
 }
 

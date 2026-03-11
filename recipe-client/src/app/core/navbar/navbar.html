@@ -1,6 +1,6 @@
 <nav class="bg-espresso-900 border-b sticky top-0 z-50">
   <div class="h-14 max-w-5xl mx-auto px-5 sm:px-6 flex items-center justify-between">
-    <a routerLink="/" class="font-display text-xl text-parchment-100">Recipe</a>
+    <a routerLink="/home" class="font-display italic text-xl text-parchment-100 leading-none">Recipe</a>
 
     @if (isAuthenticated()) {
       <button
@@ -39,9 +39,9 @@
       </div>
 
       <nav class="navbar-nav">
-        <a routerLink="/recipes" class="menu-item">Recipes</a>
-        <a routerLink="/recipes/new" class="menu-item">Add recipe</a>
-        <a routerLink="/meal-plan" class="menu-item">Week plan</a>
+        <a routerLink="/meal-plan" routerLinkActive="menu-item-active" class="menu-item">Week plan</a>
+        <a routerLink="/recipes" routerLinkActive="menu-item-active" class="menu-item">Recipes</a>
+        <a routerLink="/recipes/new" routerLinkActive="menu-item-active" class="menu-item">Add recipe</a>
         <button (click)="logout()" class="menu-item menu-item-signout">Sign out</button>
       </nav>
     </div>
