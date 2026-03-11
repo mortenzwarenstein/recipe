@@ -20,6 +20,7 @@ describe('MealPlanComponent', () => {
     fixture = TestBed.createComponent(MealPlanComponent);
     component = fixture.componentInstance;
     http = TestBed.inject(HttpTestingController);
+    fixture.detectChanges(); // flush toObservable effect so the initial HTTP call is made
   });
 
   afterEach(() => http.verify());
@@ -43,6 +44,7 @@ describe('MealPlanComponent', () => {
   it('prevWeek navigates to the previous week', () => {
     http.expectOne(r => r.url === '/api/mealplan').flush([]);
     component['prevWeek']();
+    fixture.detectChanges();
     const req = http.expectOne(r => r.url === '/api/mealplan');
     expect(component['isCurrentWeek']()).toBe(false);
     req.flush([]);
@@ -51,6 +53,7 @@ describe('MealPlanComponent', () => {
   it('nextWeek navigates to the next week', () => {
     http.expectOne(r => r.url === '/api/mealplan').flush([]);
     component['nextWeek']();
+    fixture.detectChanges();
     const req = http.expectOne(r => r.url === '/api/mealplan');
     expect(component['isCurrentWeek']()).toBe(false);
     req.flush([]);
@@ -59,8 +62,10 @@ describe('MealPlanComponent', () => {
   it('goToCurrentWeek restores current week', () => {
     http.expectOne(r => r.url === '/api/mealplan').flush([]);
     component['prevWeek']();
+    fixture.detectChanges();
     http.expectOne(r => r.url === '/api/mealplan').flush([]);
     component['goToCurrentWeek']();
+    fixture.detectChanges();
     http.expectOne(r => r.url === '/api/mealplan').flush([]);
     expect(component['isCurrentWeek']()).toBe(true);
   });
