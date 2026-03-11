@@ -10,5 +10,6 @@ data class RecipeResponse(
     val pageNumber: Int?,
     val createdByUsername: String,
     val createdAt: Instant,
-    val pickState: RecipePickState
+    val pickState: RecipePickState,
+    val calories: Int?
 )

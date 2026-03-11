@@ -8,6 +8,7 @@ export interface UpdateRecipeRequest {
   name: string;
   book: string | null;
   pageNumber: number | null;
+  calories: number | null;
 }
 
 export interface PagedResponse<T> {
@@ -25,4 +26,5 @@ export interface RecipeResponse {
   pageNumber: number | null;
   createdByUsername: string;
   createdAt: string;
+  calories: number | null;
 }

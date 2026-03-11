@@ -54,6 +54,30 @@
           </div>
         }
 
+        <div>
+          <label for="calories" class="field-label">
+            Calories
+            <span class="text-taupe-400 font-normal">(kcal per serving)</span>
+          </label>
+          <input
+            id="calories"
+            type="number"
+            formControlName="calories"
+            min="1"
+            class="field-input"
+            placeholder="e.g. 450"
+          />
+          @if (form.get('calories')?.invalid && form.get('calories')?.touched) {
+            <p class="text-xs text-terra-600 mt-1.5">Must be at least 1 kcal.</p>
+          }
+          @if (caloriesAutoLookupAttempted() && form.get('calories')?.value == null) {
+            <p class="text-xs text-taupe-400 mt-1.5">Auto-lookup found no result — enter manually.</p>
+          }
+          @if (!caloriesAutoLookupAttempted()) {
+            <p class="text-xs text-taupe-400 mt-1.5">Add a book to enable automatic calorie lookup.</p>
+          }
+        </div>
+
         @if (error()) {
           <p class="text-sm text-terra-600">{{ error() }}</p>
         }

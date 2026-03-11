@@ -12,15 +12,23 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
 
 @Service
-class RecipeService(private val recipeRepository: RecipeRepository) {
+class RecipeService(
+    private val recipeRepository: RecipeRepository,
+    private val calorieLookupService: CalorieLookupService,
+) {
 
     @Transactional
     fun create(request: CreateRecipeRequest, username: String): RecipeResponse {
+        val calories = if (request.book != null) {
+            calorieLookupService.lookupCalories(request.name, request.book)
+        } else null
+
         val recipe = Recipe(
             name = request.name,
             book = request.book,
             pageNumber = request.pageNumber,
-            createdByUsername = username
+            createdByUsername = username,
+            calories = calories,
         )
         return recipeRepository.save(recipe).toResponse()
     }
@@ -56,6 +64,7 @@ class RecipeService(private val recipeRepository: RecipeRepository) {
         recipe.name = request.name
         recipe.book = request.book
         recipe.pageNumber = request.pageNumber
+        recipe.calories = request.calories
 
         return recipeRepository.save(recipe).toResponse()
     }
@@ -124,6 +133,7 @@ class RecipeService(private val recipeRepository: RecipeRepository) {
         pageNumber = pageNumber,
         createdByUsername = createdByUsername,
         createdAt = createdAt,
-        pickState = pickState
+        pickState = pickState,
+        calories = calories,
     )
 }
