@@ -38,19 +38,10 @@ describe('HomeComponent', () => {
   afterEach(() => http.verify());
 
   it('should create', () => {
-    http.expectOne('/api/bowl');
     expect(component).toBeTruthy();
   });
 
   it('exposes username from auth service', () => {
-    http.expectOne('/api/bowl');
     expect(component['username']).toBe('admin');
-  });
-
-  it('loads bowl stats on init', () => {
-    const req = http.expectOne('/api/bowl');
-    req.flush({ recipesLeft: 5, recipesPicked: 3 });
-    expect(component['bowl']()?.recipesLeft).toBe(5);
-    expect(component['bowl']()?.recipesPicked).toBe(3);
   });
 });
