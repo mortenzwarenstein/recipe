@@ -10,6 +10,7 @@ jobs:
     outputs:
       server: ${{ steps.filter.outputs.server }}
       client: ${{ steps.filter.outputs.client }}
+      cicd:   ${{ steps.filter.outputs.cicd }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
@@ -20,6 +21,8 @@ jobs:
               - 'recipe-server/**'
             client:
               - 'recipe-client/**'
+            cicd:
+              - 'recipe-cicd/**'
 
   test-server:
     name: Test server
@@ -89,7 +92,10 @@ jobs:
     name: Deploy to prod
     runs-on: ubuntu-latest
     needs: [changes, build]
-    if: always() && needs.build.result != 'failure'
+    if: |
+      always() &&
+      (needs.build.result == 'success' || needs.changes.outputs.cicd == 'true') &&
+      needs.build.result != 'failure'
     steps:
       - uses: actions/checkout@v4
 
