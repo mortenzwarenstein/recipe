@@ -21,6 +21,7 @@ export class AddRecipeComponent {
     name: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     book: new FormControl<string | null>(null),
     pageNumber: new FormControl<number | null>(null),
+    calories: new FormControl<number | null>(null),
   });
 
   protected readonly loading = signal(false);
@@ -47,9 +48,9 @@ export class AddRecipeComponent {
     this.error.set(null);
     this.loading.set(true);
 
-    const { name, book, pageNumber } = this.form.getRawValue();
+    const { name, book, pageNumber, calories } = this.form.getRawValue();
 
-    this.recipeService.create({ name, book, pageNumber }).subscribe({
+    this.recipeService.create({ name, book, pageNumber, calories }).subscribe({
       next: () => this.router.navigate(['/recipes']),
       error: (err: unknown) => {
         const detail = err instanceof HttpErrorResponse ? err.error?.detail : undefined;

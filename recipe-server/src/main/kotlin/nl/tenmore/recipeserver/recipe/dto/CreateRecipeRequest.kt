@@ -7,5 +7,6 @@ import jakarta.validation.constraints.Size
 data class CreateRecipeRequest(
     @field:NotBlank @field:Size(max = 255) val name: String,
     @field:Size(max = 255) val book: String?,
-    @field:Min(1) val pageNumber: Int?
+    @field:Min(1) val pageNumber: Int?,
+    @field:Min(1) val calories: Int? = null,
 )
