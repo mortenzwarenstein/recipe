@@ -23,6 +23,7 @@ services:
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
     volumes:
       - ./keycloak/recipe-realm.json:/opt/keycloak/data/import/recipe-realm.json
+      - ./keycloak/themes/recipe:/opt/keycloak/themes/recipe
     ports:
       - "8180:8080"
     healthcheck:
