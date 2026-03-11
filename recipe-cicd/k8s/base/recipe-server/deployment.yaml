@@ -39,6 +39,8 @@ spec:
               value: http://keycloak:8080/realms/recipe
             - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI
               value: http://keycloak:8080/realms/recipe/protocol/openid-connect/certs
+            - name: SPRING_PROFILES_ACTIVE
+              value: prod
           readinessProbe:
             httpGet:
               path: /actuator/health/readiness
