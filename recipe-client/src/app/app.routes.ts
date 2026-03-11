@@ -5,7 +5,7 @@ import { HomeComponent } from './features/home/home';
 import { RecipeListComponent } from './features/recipes/recipe-list/recipe-list';
 import { AddRecipeComponent } from './features/recipes/add-recipe/add-recipe';
 import { EditRecipeComponent } from './features/recipes/edit-recipe/edit-recipe';
-import { RecipePickComponent } from './features/recipes/recipe-pick/recipe-pick';
+import { MealPlanComponent } from './features/meal-plan/meal-plan';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent, canActivate: [authGuard] },
@@ -17,8 +17,8 @@ export const routes: Routes = [
       { path: '', component: RecipeListComponent },
       { path: 'new', component: AddRecipeComponent },
       { path: ':id/edit', component: EditRecipeComponent },
-      { path: 'pick' , component: RecipePickComponent }
     ]
   },
+  { path: 'meal-plan', component: MealPlanComponent, canActivate: [authGuard] },
   { path: '**', redirectTo: '' },
 ];
