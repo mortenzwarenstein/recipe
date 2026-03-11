@@ -32,6 +32,7 @@ dependencies {
     implementation 'org.flywaydb:flyway-database-postgresql'
 
     runtimeOnly 'org.postgresql:postgresql'
+    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 
     testImplementation 'org.mockito.kotlin:mockito-kotlin:5.3.1'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
