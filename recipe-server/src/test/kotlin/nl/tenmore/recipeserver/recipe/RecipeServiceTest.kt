@@ -21,6 +21,7 @@ import java.util.Optional
 class RecipeServiceTest {
 
     @Mock lateinit var recipeRepository: RecipeRepository
+    @Mock lateinit var calorieLookupService: CalorieLookupService
 
     @InjectMocks lateinit var service: RecipeService
 
@@ -84,7 +85,7 @@ class RecipeServiceTest {
         whenever(recipeRepository.findById(1L)).thenReturn(Optional.of(existing))
         whenever(recipeRepository.save<Recipe>(any())).thenReturn(existing)
 
-        service.update(1L, UpdateRecipeRequest(name = "New Name", book = null, pageNumber = null))
+        service.update(1L, UpdateRecipeRequest(name = "New Name", book = null, pageNumber = null, calories = null))
 
         assertThat(existing.name).isEqualTo("New Name")
     }
@@ -94,7 +95,7 @@ class RecipeServiceTest {
         whenever(recipeRepository.findById(99L)).thenReturn(Optional.empty())
 
         assertThrows<ResponseStatusException> {
-            service.update(99L, UpdateRecipeRequest(name = "x", book = null, pageNumber = null))
+            service.update(99L, UpdateRecipeRequest(name = "x", book = null, pageNumber = null, calories = null))
         }
     }
 

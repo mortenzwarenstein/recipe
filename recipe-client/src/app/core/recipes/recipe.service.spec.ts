@@ -43,14 +43,14 @@ describe('RecipeService', () => {
   });
 
   it('create sends POST /api/recipes', () => {
-    service.create({ name: 'Pasta', book: null, pageNumber: null }).subscribe();
+    service.create({ name: 'Pasta', book: null, pageNumber: null, calories: null }).subscribe();
     const req = http.expectOne('/api/recipes');
     expect(req.request.method).toBe('POST');
     req.flush({});
   });
 
   it('update sends PUT /api/recipes/:id', () => {
-    service.update(1, { name: 'Updated', book: null, pageNumber: null }).subscribe();
+    service.update(1, { name: 'Updated', book: null, pageNumber: null, calories: null }).subscribe();
     const req = http.expectOne('/api/recipes/1');
     expect(req.request.method).toBe('PUT');
     req.flush({});
