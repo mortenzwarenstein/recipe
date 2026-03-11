@@ -26,8 +26,14 @@ class MealPlanService(private val mealPlanRepo: MealPlanRepository, private val 
     fun setMealPlanByDate(date: String, createdByUsername: String): MealPlanResponse {
         val parsed = LocalDate.parse(date, DateTimeFormatter.ISO_DATE)
 
-        val candidates = recipeRepo.findAllByPickStateIn(listOf(RecipePickState.NOT_PICKED))
-        if (candidates.isEmpty()) throw ResponseStatusException(HttpStatus.CONFLICT, "No unpicked recipes available")
+        var candidates = recipeRepo.findAllByPickStateIn(listOf(RecipePickState.NOT_PICKED))
+        if (candidates.isEmpty()) {
+            val toReset = recipeRepo.findAllByPickStateIn(listOf(RecipePickState.PICKED, RecipePickState.CURRENT))
+            if (toReset.isEmpty()) throw ResponseStatusException(HttpStatus.CONFLICT, "No recipes available")
+            toReset.forEach { it.pickState = RecipePickState.NOT_PICKED }
+            recipeRepo.saveAll(toReset)
+            candidates = toReset
+        }
 
         val recipe = candidates.random()
         recipe.pickState = RecipePickState.CURRENT
@@ -44,6 +50,16 @@ class MealPlanService(private val mealPlanRepo: MealPlanRepository, private val 
         }
 
         return mealPlan.toResponse()
+    }
+
+    @Transactional
+    fun clearWeek(week: String) {
+        val monday = LocalDate.parse("$week-1", DateTimeFormatter.ISO_WEEK_DATE)
+        val sunday = monday.plusDays(6)
+        val entries = mealPlanRepo.findByPlannedDateBetween(monday, sunday)
+        entries.forEach { it.recipe.pickState = RecipePickState.NOT_PICKED }
+        recipeRepo.saveAll(entries.map { it.recipe })
+        mealPlanRepo.deleteAll(entries)
     }
 
     @Transactional

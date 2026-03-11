@@ -26,6 +26,12 @@ class MealPlanController(private val mealPlanService: MealPlanService) {
     ): ResponseEntity<MealPlanResponse> =
         ResponseEntity.ok(mealPlanService.setMealPlanByDate(date, authentication.name))
 
+    @DeleteMapping
+    fun clearWeek(@RequestParam week: String): ResponseEntity<Void> {
+        mealPlanService.clearWeek(week)
+        return ResponseEntity.noContent().build()
+    }
+
     @DeleteMapping("/{date}")
     fun deleteMealPlan(@PathVariable date: String): ResponseEntity<Void> {
         mealPlanService.deleteMealPlan(date)
