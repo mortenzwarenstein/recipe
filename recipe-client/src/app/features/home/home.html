@@ -4,19 +4,6 @@
     <h1 class="font-display text-5xl text-espresso-900 leading-tight">{{ username }}</h1>
   </div>
 
-  @if (bowl(); as bowl) {
-    <div class="grid grid-cols-2 gap-3 mb-10">
-      <div class="card px-5 py-4">
-        <p class="text-taupe-500 text-xs font-medium tracking-wider uppercase mb-2">Bowl — remaining</p>
-        <p class="font-display text-4xl text-espresso-900">{{ bowl.recipesLeft }}</p>
-      </div>
-      <div class="card px-5 py-4">
-        <p class="text-taupe-500 text-xs font-medium tracking-wider uppercase mb-2">Bowl — picked</p>
-        <p class="font-display text-4xl text-sage-500">{{ bowl.recipesPicked }}</p>
-      </div>
-    </div>
-  }
-
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
     <a routerLink="/recipes" class="home-card">
       <div class="home-card-icon">

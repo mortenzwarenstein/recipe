@@ -14,4 +14,9 @@ resources:
   - recipe-server/service.yaml
   - recipe-client/deployment.yaml
   - recipe-client/service.yaml
+  - monitoring/prometheus-config.yaml
+  - monitoring/prometheus.yaml
+  - monitoring/grafana-provisioning.yaml
+  - monitoring/grafana-dashboard.yaml
+  - monitoring/grafana.yaml
 
