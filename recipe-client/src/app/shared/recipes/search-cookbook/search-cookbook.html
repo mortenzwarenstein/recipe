@@ -5,14 +5,14 @@
     (focus)="onFocus()"
     (blur)="onBlur()"
     placeholder="e.g. The Silver Spoon"
-    class="w-full px-3 py-2.5 text-sm bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+    class="field-input"
   />
   @if (showDropdown()) {
-    <ul class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+    <ul class="absolute z-10 w-full mt-1 bg-parchment-50 border border-parchment-300 rounded-lg shadow-lg overflow-hidden">
       @for (book of suggestions(); track book) {
         <li
           (mousedown)="selectSuggestion(book)"
-          class="px-3 py-2 text-sm cursor-pointer hover:bg-gray-50"
+          class="px-4 py-2.5 text-sm text-espresso-900 cursor-pointer hover:bg-parchment-100 transition-colors"
         >
           {{ book }}
         </li>

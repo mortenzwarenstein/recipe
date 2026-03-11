@@ -1,4 +1,41 @@
-<main class="max-w-screen-lg mx-auto px-4 sm:px-6 py-8">
-  <h1 class="text-2xl font-semibold text-gray-900 truncate">Welcome back, {{ username }}</h1>
-  <p class="mt-1 text-sm text-gray-500">You're signed in and ready to go.</p>
+<main class="page">
+  <div class="mb-10">
+    <p class="text-taupe-500 text-xs font-medium tracking-widest uppercase mb-2">Good to see you</p>
+    <h1 class="font-display italic text-5xl text-espresso-900 leading-tight">{{ username }}</h1>
+  </div>
+
+  @if (bowl(); as bowl) {
+    <div class="grid grid-cols-2 gap-3 mb-10">
+      <div class="card px-5 py-4">
+        <p class="text-taupe-500 text-xs font-medium tracking-wider uppercase mb-2">Bowl — remaining</p>
+        <p class="font-display text-4xl text-espresso-900">{{ bowl.recipesLeft }}</p>
+      </div>
+      <div class="card px-5 py-4">
+        <p class="text-taupe-500 text-xs font-medium tracking-wider uppercase mb-2">Bowl — picked</p>
+        <p class="font-display text-4xl text-sage-500">{{ bowl.recipesPicked }}</p>
+      </div>
+    </div>
+  }
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <a routerLink="/recipes" class="home-card">
+      <div class="home-card-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+        </svg>
+      </div>
+      <p class="home-card-title">Recipes</p>
+      <p class="home-card-sub">Browse your collection</p>
+    </a>
+
+    <a routerLink="/meal-plan" class="home-card">
+      <div class="home-card-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+        </svg>
+      </div>
+      <p class="home-card-title">Week plan</p>
+      <p class="home-card-sub">Plan the week ahead</p>
+    </a>
+  </div>
 </main>
