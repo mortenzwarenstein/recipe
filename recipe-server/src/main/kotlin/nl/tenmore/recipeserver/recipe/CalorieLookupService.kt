@@ -11,10 +11,10 @@ import org.springframework.web.client.RestClient
 class CalorieLookupService(
     @Value("\${calorie-lookup.spoonacular-api-key:}") private val spoonacularApiKey: String,
     @Value("\${calorie-lookup.anthropic-api-key:}") private val anthropicApiKey: String,
-    private val objectMapper: ObjectMapper,
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
     private val restClient = RestClient.create()
+    private val objectMapper = ObjectMapper()
 
     fun lookupCalories(recipeName: String, bookName: String): Int? {
         if (spoonacularApiKey.isBlank() || anthropicApiKey.isBlank()) {
