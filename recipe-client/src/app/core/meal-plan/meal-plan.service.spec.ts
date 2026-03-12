@@ -33,6 +33,13 @@ describe('MealPlanService', () => {
     req.flush({});
   });
 
+  it('pickSpecificForDay sends PUT /api/mealplan/:date with recipeId param', () => {
+    service.pickSpecificForDay('2026-03-11', 42).subscribe();
+    const req = http.expectOne(r => r.url === '/api/mealplan/2026-03-11' && r.params.get('recipeId') === '42');
+    expect(req.request.method).toBe('PUT');
+    req.flush({});
+  });
+
   it('clearDay sends DELETE /api/mealplan/:date', () => {
     service.clearDay('2026-03-11').subscribe();
     const req = http.expectOne('/api/mealplan/2026-03-11');

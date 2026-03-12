@@ -1,0 +1,55 @@
+<div
+  class="fixed inset-0 bg-espresso-900/60 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
+  (click)="dismiss()"
+>
+  <div
+    class="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl flex flex-col shadow-2xl max-h-[85vh]"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="flex items-center justify-between px-5 pt-5 pb-4 border-b border-parchment-200 shrink-0">
+      <h2 class="font-display text-xl text-espresso-900">Pick a recipe</h2>
+      <button (click)="dismiss()" class="btn-icon" aria-label="Close">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="px-5 py-3 border-b border-parchment-200 shrink-0">
+      <input
+        type="text"
+        placeholder="Search recipes…"
+        class="field-input w-full"
+        [ngModel]="query()"
+        (ngModelChange)="onSearch($event)"
+        autofocus
+      />
+    </div>
+
+    <ul class="overflow-y-auto flex-1 divide-y divide-parchment-100">
+      @if (loading()) {
+        <li class="px-5 py-4 text-sm text-taupe-400">Loading…</li>
+      } @else if (recipes().length === 0) {
+        <li class="px-5 py-4 text-sm text-taupe-400 italic">No recipes found</li>
+      } @else {
+        @for (recipe of recipes(); track recipe.id) {
+          <li>
+            <button
+              class="w-full text-left px-5 py-3.5 hover:bg-parchment-50 transition-colors"
+              (click)="select(recipe)"
+            >
+              <p class="font-medium text-espresso-900 text-sm">{{ recipe.name }}</p>
+              <p class="text-xs text-taupe-400 mt-0.5">
+                @if (recipe.book && recipe.pageNumber) {
+                  {{ recipe.book }}&thinsp;·&thinsp;p.&thinsp;{{ recipe.pageNumber }}
+                } @else {
+                  By heart
+                }
+              </p>
+            </button>
+          </li>
+        }
+      }
+    </ul>
+  </div>
+</div>

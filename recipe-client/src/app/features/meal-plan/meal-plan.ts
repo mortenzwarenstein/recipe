@@ -5,13 +5,15 @@ import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 
 import { MealPlanService } from '../../core/meal-plan/meal-plan.service';
 import { MealPlanResponse } from '../../core/meal-plan/meal-plan.models';
+import { RecipeResponse } from '../../core/recipes/recipe.models';
+import { RecipePickerModalComponent } from '../../shared/recipes/recipe-picker-modal/recipe-picker-modal';
 import { getMonday, toDisplayDate, toIsoDate, toIsoWeekString } from '../../shared/utils/date.utils';
 
 const DAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 @Component({
   selector: 'app-meal-plan',
-  imports: [],
+  imports: [RecipePickerModalComponent],
   templateUrl: './meal-plan.html',
 })
 export class MealPlanComponent {
@@ -41,6 +43,8 @@ export class MealPlanComponent {
   );
 
   protected readonly dayNames = DAY_NAMES;
+
+  protected readonly pickerDay = signal<string | null>(null);
 
   constructor() {
     toObservable(this.weekString)
@@ -128,6 +132,29 @@ export class MealPlanComponent {
         },
         error: () => {
           this.error.set('No unpicked recipes available.');
+          this.pickingDays.update(s => { const n = new Set(s); n.delete(isoDate); return n; });
+        },
+      });
+  }
+
+  protected openPickerModal(date: Date): void {
+    this.pickerDay.set(toIsoDate(date));
+  }
+
+  protected onPickerSelect(recipe: RecipeResponse): void {
+    const isoDate = this.pickerDay();
+    if (!isoDate) return;
+    this.pickerDay.set(null);
+    this.pickingDays.update(s => new Set(s).add(isoDate));
+    this.mealPlanService.pickSpecificForDay(isoDate, recipe.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: entry => {
+          this.entries.update(es => [...es.filter(e => e.plannedDate !== isoDate), entry]);
+          this.pickingDays.update(s => { const n = new Set(s); n.delete(isoDate); return n; });
+        },
+        error: () => {
+          this.error.set('Failed to pick recipe.');
           this.pickingDays.update(s => { const n = new Set(s); n.delete(isoDate); return n; });
         },
       });

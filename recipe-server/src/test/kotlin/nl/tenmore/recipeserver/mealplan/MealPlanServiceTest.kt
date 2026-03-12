@@ -62,7 +62,7 @@ class MealPlanServiceTest {
         whenever(mealPlanRepo.findByPlannedDate(date)).thenReturn(null)
         whenever(mealPlanRepo.save(any())).thenReturn(mealPlan(1, recipe, date))
 
-        val result = service.setMealPlanByDate("2026-03-11", "admin")
+        val result = service.setMealPlanByDate("2026-03-11", null, "admin")
 
         assertThat(recipe.pickState).isEqualTo(RecipePickState.CURRENT)
         assertThat(result.recipe.id).isEqualTo(1)
@@ -80,7 +80,7 @@ class MealPlanServiceTest {
         whenever(mealPlanRepo.findByPlannedDate(date)).thenReturn(null)
         whenever(mealPlanRepo.save(any())).thenReturn(mealPlan(1, pickedRecipe, date))
 
-        service.setMealPlanByDate("2026-03-11", "admin")
+        service.setMealPlanByDate("2026-03-11", null, "admin")
 
         assertThat(pickedRecipe.pickState).isEqualTo(RecipePickState.CURRENT)
     }
@@ -92,7 +92,7 @@ class MealPlanServiceTest {
             .thenReturn(emptyList())
 
         assertThrows<ResponseStatusException> {
-            service.setMealPlanByDate("2026-03-11", "admin")
+            service.setMealPlanByDate("2026-03-11", null, "admin")
         }
     }
 
@@ -107,10 +107,34 @@ class MealPlanServiceTest {
         whenever(mealPlanRepo.findByPlannedDate(date)).thenReturn(existing)
         whenever(mealPlanRepo.save(existing)).thenReturn(existing)
 
-        service.setMealPlanByDate("2026-03-11", "admin")
+        service.setMealPlanByDate("2026-03-11", null, "admin")
 
         assertThat(oldRecipe.pickState).isEqualTo(RecipePickState.NOT_PICKED)
         assertThat(existing.recipe).isEqualTo(newRecipe)
+    }
+
+    @Test
+    fun `setMealPlanByDate with recipeId picks that specific recipe`() {
+        val specificRecipe = recipe(5, RecipePickState.PICKED)
+        val date = LocalDate.of(2026, 3, 11)
+        whenever(recipeRepo.findById(5L)).thenReturn(java.util.Optional.of(specificRecipe))
+        whenever(recipeRepo.save(specificRecipe)).thenReturn(specificRecipe)
+        whenever(mealPlanRepo.findByPlannedDate(date)).thenReturn(null)
+        whenever(mealPlanRepo.save(any())).thenReturn(mealPlan(1, specificRecipe, date))
+
+        val result = service.setMealPlanByDate("2026-03-11", 5L, "admin")
+
+        assertThat(specificRecipe.pickState).isEqualTo(RecipePickState.CURRENT)
+        assertThat(result.recipe.id).isEqualTo(5)
+    }
+
+    @Test
+    fun `setMealPlanByDate with unknown recipeId throws 404`() {
+        whenever(recipeRepo.findById(99L)).thenReturn(java.util.Optional.empty())
+
+        assertThrows<ResponseStatusException> {
+            service.setMealPlanByDate("2026-03-11", 99L, "admin")
+        }
     }
 
     @Test

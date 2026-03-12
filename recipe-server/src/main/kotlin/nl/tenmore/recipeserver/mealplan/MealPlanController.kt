@@ -22,9 +22,10 @@ class MealPlanController(private val mealPlanService: MealPlanService) {
     @PutMapping("/{date}")
     fun updateMealPlan(
         @PathVariable date: String,
+        @RequestParam(required = false) recipeId: Long?,
         authentication: Authentication
     ): ResponseEntity<MealPlanResponse> =
-        ResponseEntity.ok(mealPlanService.setMealPlanByDate(date, authentication.name))
+        ResponseEntity.ok(mealPlanService.setMealPlanByDate(date, recipeId, authentication.name))
 
     @DeleteMapping
     fun clearWeek(@RequestParam week: String): ResponseEntity<Void> {
