@@ -16,6 +16,10 @@ export class MealPlanService {
     return this.http.put<MealPlanResponse>(`/api/mealplan/${date}`, {});
   }
 
+  pickSpecificForDay(date: string, recipeId: number): Observable<MealPlanResponse> {
+    return this.http.put<MealPlanResponse>(`/api/mealplan/${date}`, {}, { params: { recipeId } });
+  }
+
   clearDay(date: string): Observable<void> {
     return this.http.delete<void>(`/api/mealplan/${date}`);
   }

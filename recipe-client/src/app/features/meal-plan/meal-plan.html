@@ -6,7 +6,7 @@
         <h1 class="font-display italic text-4xl text-espresso-900 leading-tight">Week plan</h1>
         <p class="text-taupe-500 text-sm mt-1">
           {{ weekString() }}
-          @if (isCurrentWeek()) { &thinsp;·&thinsp; This week }
+          @if (isCurrentWeek()) { This week }
         </p>
       </div>
       <div class="flex items-center gap-1.5 mt-1 shrink-0">
@@ -84,16 +84,36 @@
             <div class="flex-1">
               <p class="text-sm text-taupe-300 italic">Nothing planned</p>
             </div>
-            <button
-              (click)="pickForDay(day)"
-              [disabled]="pickingDays().has(isoDate(day))"
-              class="btn btn-primary text-xs shrink-0"
-            >
-              @if (pickingDays().has(isoDate(day))) { Picking… } @else { Pick }
-            </button>
+            <div class="flex items-center gap-1.5 shrink-0">
+              <button
+                (click)="openPickerModal(day)"
+                [disabled]="pickingDays().has(isoDate(day))"
+                aria-label="Pick specific recipe"
+                class="btn-icon"
+                title="Pick a specific recipe"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487a2.1 2.1 0 112.97 2.97L8.166 19.123l-4.665 1.166 1.166-4.665L16.862 4.487z" />
+                </svg>
+              </button>
+              <button
+                (click)="pickForDay(day)"
+                [disabled]="pickingDays().has(isoDate(day))"
+                class="btn btn-primary text-xs shrink-0"
+              >
+                @if (pickingDays().has(isoDate(day))) { Picking… } @else { Pick }
+              </button>
+            </div>
           }
         </li>
       }
     </ul>
   }
 </div>
+
+@if (pickerDay()) {
+  <app-recipe-picker-modal
+    (recipeSelected)="onPickerSelect($event)"
+    (dismissed)="pickerDay.set(null)"
+  />
+}
