@@ -23,19 +23,24 @@ class MealPlanService(private val mealPlanRepo: MealPlanRepository, private val 
     }
 
     @Transactional
-    fun setMealPlanByDate(date: String, createdByUsername: String): MealPlanResponse {
+    fun setMealPlanByDate(date: String, recipeId: Long?, createdByUsername: String): MealPlanResponse {
         val parsed = LocalDate.parse(date, DateTimeFormatter.ISO_DATE)
 
-        var candidates = recipeRepo.findAllByPickStateIn(listOf(RecipePickState.NOT_PICKED))
-        if (candidates.isEmpty()) {
-            val toReset = recipeRepo.findAllByPickStateIn(listOf(RecipePickState.PICKED, RecipePickState.CURRENT))
-            if (toReset.isEmpty()) throw ResponseStatusException(HttpStatus.CONFLICT, "No recipes available")
-            toReset.forEach { it.pickState = RecipePickState.NOT_PICKED }
-            recipeRepo.saveAll(toReset)
-            candidates = toReset
+        val recipe = if (recipeId != null) {
+            recipeRepo.findById(recipeId).orElseThrow {
+                ResponseStatusException(HttpStatus.NOT_FOUND, "Recipe not found")
+            }
+        } else {
+            var candidates = recipeRepo.findAllByPickStateIn(listOf(RecipePickState.NOT_PICKED))
+            if (candidates.isEmpty()) {
+                val toReset = recipeRepo.findAllByPickStateIn(listOf(RecipePickState.PICKED, RecipePickState.CURRENT))
+                if (toReset.isEmpty()) throw ResponseStatusException(HttpStatus.CONFLICT, "No recipes available")
+                toReset.forEach { it.pickState = RecipePickState.NOT_PICKED }
+                recipeRepo.saveAll(toReset)
+                candidates = toReset
+            }
+            candidates.random()
         }
-
-        val recipe = candidates.random()
         recipe.pickState = RecipePickState.CURRENT
         recipeRepo.save(recipe)
 
